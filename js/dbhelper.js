@@ -12,7 +12,41 @@ class DBHelper {
   }
 
   /**
-   * Fetch all restaurants.
+   * IDB functions
+   */
+
+  static createDB() {
+    return idb.open("restaurantDB", 1, upgradeDb => {
+      upgradeDb.createObjectStore("restaurantDB", {
+        keyPath: "id"
+      });
+      console.log("DB open");
+    });
+  }
+
+  static populateDB(restaurants) {
+    return DBHelper.createDB().then(db => {
+      if (!db) return;
+      let tx = db.transaction("restaurantDB", "readwrite");
+      let store = tx.objectStore("restaurantDB");
+      restaurants.forEach(restaurant => {
+        store.put(restaurant);
+      });
+      return tx.complete;
+    });
+  }
+
+  static getCachedDB() {
+    return DBHelper.createDB().then(db => {
+      if (!db) return;
+      let tx = db.transaction("restaurantDB");
+      let store = tx.objectStore("restaurantDB");
+      return store.getAll();
+    });
+  }
+
+  /**
+   * Fetch all restaurants. Stage 1.
    */
   // static fetchRestaurants(callback) {
   //   let xhr = new XMLHttpRequest();
@@ -30,58 +64,6 @@ class DBHelper {
   //     }
   //   };
   //   xhr.send();
-  // }
-
-  static createDB() {
-    return idb.open("restaurantDB", 1, upgradeDb => {
-      upgradeDb.createObjectStore("restaurantDB", {
-        keyPath: "id"
-      });
-      console.log("DB open");
-    });
-  }
-
-  static populateDB(restaurants) {
-    return DBHelper.createDB().then(db => {
-      if (!db) return;
-      let tx = db.transaction("restaurantDB", "readwrite");
-      let store = tx.objectStore("restaurantDB");
-      restaurants.forEach(function(restaurant) {
-        store.put(restaurant);
-      });
-      return tx.complete;
-    });
-  }
-
-  static getCachedDB() {
-    return DBHelper.createDB().then(function(db) {
-      if (!db) return;
-      let tx = db.transaction("restaurantDB");
-      let store = tx.objectStore("restaurantDB");
-      return store.getAll();
-    });
-  }
-
-  // static fetchRestaurants(callback) {
-  //   return DBHelper.getCachedDB()
-  //     .then(restaurants => {
-  //       console.log(restaurants);
-  //       if (restaurants.length > 0) {
-  //         callback(null, restaurants);
-  //       } else {
-  //         return fetch(DBHelper.DATABASE_URL)
-  //           .then(response => {
-  //             return response.json();
-  //           })
-  //           .then(restaurants => {
-  //             DBHelper.populateDB(restaurants);
-  //             return restaurants;
-  //           });
-  //       }
-  //     })
-  //     .catch(err => {
-  //       callback(err, null);
-  //     });
   // }
 
   static fetchRestaurants(callback) {

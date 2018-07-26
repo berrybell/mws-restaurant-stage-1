@@ -25,7 +25,8 @@ class DBHelper {
   }
 
   static populateDB(restaurants) {
-    return DBHelper.createDB().then(db => {
+    const dbPromise = DBHelper.createDB();
+    dbPromise.then(db => {
       if (!db) return;
       let tx = db.transaction("restaurantDB", "readwrite");
       let store = tx.objectStore("restaurantDB");
@@ -82,6 +83,9 @@ class DBHelper {
         } else {
           callback(null, restaurants);
         }
+      })
+      .then(restaurants => {
+        callback(null, restaurants);
       })
       .catch(err => {
         callback(err, null);

@@ -70,7 +70,6 @@ class DBHelper {
   static fetchRestaurants(callback) {
     return DBHelper.getCachedDB()
       .then(restaurants => {
-        console.log(restaurants);
         if (restaurants.length < 1) {
           return fetch(DBHelper.DATABASE_URL)
             .then(response => {

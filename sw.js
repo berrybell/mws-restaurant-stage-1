@@ -2,11 +2,14 @@ const staticCacheName = "restaurant-review-v2";
 
 self.addEventListener("install", function(event) {
   var urlsToCache = [
+    "/",
     "/index.html",
+    "/restaurant.html",
     "/manifest.json",
     "/css/styles.css",
     "/js/main.js",
     "/js/restaurant_info.js",
+    "/js/dbhelper.js",
     "/img/1_1x.jpg",
     "/img/2_1x.jpg",
     "/img/3_1x.jpg",
@@ -38,10 +41,11 @@ self.addEventListener("install", function(event) {
 });
 
 self.addEventListener("fetch", function(event) {
-  // The following will respond with cache is there is one. If not, will fetch from network
+  // The following will respond with cache is there is one. If not, will fetch from network	  // The following will respond with cache is there is one. If not, will fetch from network
   event.respondWith(
     caches.match(event.request).then(function(response) {
       if (response) {
+        console.log("Found ", event.request.url, " in cache");
         return response;
       }
       return fetch(event.request);

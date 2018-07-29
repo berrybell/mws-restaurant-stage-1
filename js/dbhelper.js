@@ -70,7 +70,7 @@ class DBHelper {
   static fetchRestaurants(callback) {
     return DBHelper.getCachedDB()
       .then(restaurants => {
-        if (restaurants.length < 1) {
+        if (!restaurants.length) {
           return fetch(DBHelper.DATABASE_URL)
             .then(response => {
               return response.json();
@@ -80,7 +80,7 @@ class DBHelper {
               return restaurants;
             });
         } else {
-          callback(null, restaurants);
+          return Promise.resolve(restaurants);
         }
       })
       .then(restaurants => {

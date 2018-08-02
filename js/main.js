@@ -181,6 +181,26 @@ createRestaurantHTML = restaurant => {
   name.innerHTML = restaurant.name;
   li.append(name);
 
+  const favorite = document.createElement("b");
+  favorite.innerHTML = "⍟";
+  favorite.classList.add("favorite");
+  favorite.onclick = function() {
+    let setFavorite = !restaurant.is_favorite;
+    DBHelper.changeFavStatus(restaurant, setFavorite);
+    if (setFavorite) {
+      this.classList.add("is-favorite");
+      this.setAttribute("aria-role", "add to favorites");
+      console.log("faved");
+    } else if (!setFavorite) {
+      this.classList.remove("is-favorite");
+      this.setAttribute("aria-role", "remove from favorites");
+      console.log("unfaved");
+    }
+    restaurant.is_favorite = !restaurant.is_favorite;
+  };
+  if (restaurant.is_favorite) favorite.classList.add("is-favorite");
+  li.append(favorite);
+
   const neighborhood = document.createElement("p");
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);

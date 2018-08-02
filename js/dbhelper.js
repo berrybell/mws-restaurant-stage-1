@@ -242,4 +242,33 @@ class DBHelper {
     marker.addTo(newMap);
     return marker;
   }
+
+  static changeFavStatus(restaurant, setFavorite) {
+    if (setFavorite) {
+      fetch(
+        `http://localhost:1337/restaurants/${restaurant.id}/?is_favorite=true`,
+        {
+          method: "PUT"
+        }
+      ).then(
+        DBHelper.createDB().then(db => {
+          if (!db) return;
+          let tx = db.transaction("restaurantDB", "readwrite");
+          let store = tx.objectStore("restaurantDB");
+          store.get(restaurant.id).then(restaurant => {
+            restaurant.is_favorite = true;
+            store.put(restaurant);
+          });
+          return tx.complete;
+        })
+      );
+    } else {
+      fetch(
+        `http://localhost:1337/restaurants/${restaurant.id}/?is_favorite=false`,
+        {
+          method: "PUT"
+        }
+      ).then(console.log("unfaved on server"));
+    }
+  }
 }

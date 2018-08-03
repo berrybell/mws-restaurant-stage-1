@@ -207,11 +207,11 @@ nav h1 a {
   margin: 0;
   font-size: 11pt;
 }
-#restaurants-list li a {
+#restaurants-list li a,
+#review-form button {
   background-color: #f39e02;
   border-bottom: 3px solid #eee;
   color: #ffffff;
-  display: inline-block;
   font-size: 10pt;
   margin: 15px 0 0;
   padding: 8px 30px 10px;
@@ -282,7 +282,8 @@ nav h1 a {
   width: 100%;
 }
 #restaurant-container,
-#reviews-container {
+#reviews-container,
+#review-add-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   width: 50%;
@@ -290,7 +291,8 @@ nav h1 a {
 #restaurant-container {
   padding: 0px 40px 30px;
 }
-#reviews-container {
+#reviews-container,
+#review-add-container {
   padding: 30px 40px 80px;
 }
 #reviews-container h2 {
@@ -328,13 +330,28 @@ nav h1 a {
 #restaurant-hours td {
   color: #666;
 }
-#review-form {
-  width: 50%;
-}
 #review-form label {
-  display: inline-block;
-  width: 10em;
-  padding-right: 10px;
+  font-size: 1.1em;
+  font-weight: 700;
+  display: block;
+  width: 87%;
+  padding: 5px 50px 5px 0;
+  vertical-align: top;
+}
+#review-form input,
+#review-form select,
+#review-form textarea {
+  min-height: 44px;
+  border: 1px solid #666;
+  border-radius: 8px;
+}
+#review-form textarea {
+  width: 70%;
+  height: 15vh;
+  min-width: 300px;
+}
+#review-form button {
+  display: block;
 }
 /* ====================== Media Queries ====================== */
 @media screen and (max-width: 425px) {

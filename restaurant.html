@@ -56,6 +56,23 @@
     <!-- Beginning reviews -->
     <section id="reviews-container" tabindex="0">
       <ul id="reviews-list"></ul>
+      <form id="review-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name">
+        <label for="rating">Rating:
+          <select id="rating">
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select>
+        </label>
+        <label for="comments">Review:
+          <textarea rows="3" cols="33" id="comments"></textarea>
+        </label>
+        <button id="form-submit" onclick="addReview()">Add review</button>
+      </form>
     </section>
     <!-- End reviews -->
   </main>

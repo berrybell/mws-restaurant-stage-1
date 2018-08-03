@@ -8,7 +8,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   /**
@@ -71,7 +71,7 @@ class DBHelper {
     return DBHelper.getCachedDB()
       .then(restaurants => {
         if (!restaurants.length) {
-          return fetch(DBHelper.DATABASE_URL)
+          return fetch(`${DBHelper.DATABASE_URL}/restaurants`)
             .then(response => {
               return response.json();
             })
@@ -242,11 +242,15 @@ class DBHelper {
     marker.addTo(newMap);
     return marker;
   }
-
+  /**
+   * Favorite/unfavorite a restaurant
+   */
   static changeFavStatus(restaurant, setFavorite) {
     if (setFavorite) {
       fetch(
-        `http://localhost:1337/restaurants/${restaurant.id}/?is_favorite=true`,
+        `${DBHelper.DATABASE_URL}/restaurants/${
+          restaurant.id
+        }/?is_favorite=true`,
         {
           method: "PUT"
         }
@@ -264,11 +268,60 @@ class DBHelper {
       );
     } else {
       fetch(
-        `http://localhost:1337/restaurants/${restaurant.id}/?is_favorite=false`,
+        `${DBHelper.DATABASE_URL}/restaurants/${
+          restaurant.id
+        }/?is_favorite=false`,
         {
           method: "PUT"
         }
-      ).then(console.log("unfaved on server"));
+      ).then(
+        DBHelper.createDB().then(db => {
+          if (!db) return;
+          let tx = db.transaction("restaurantDB", "readwrite");
+          let store = tx.objectStore("restaurantDB");
+          store.get(restaurant.id).then(restaurant => {
+            restaurant.is_favorite = false;
+            store.put(restaurant);
+          });
+          return tx.complete;
+        })
+      );
     }
+  }
+  /**
+   * Get all reviews for restaurant
+   */
+  static getReviews(restaurant) {
+    fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`)
+      .then(response => {
+        return response.json();
+      })
+      .then(reviews => {
+        DBHelper.createDB().then(db => {
+          if (!db) return;
+          let tx = db.transaction("restaurantDB", "readwrite");
+          let store = tx.objectStore("restaurantDB");
+          store.get(restaurant.id).then(restaurant => {
+            restaurant.reviews = reviews;
+            store.put(restaurant);
+            return reviews;
+          });
+          return tx.complete;
+        });
+      });
+  }
+
+  /**
+   * Add a restaurant review
+   */
+  static addReview(review) {
+    fetch("http://localhost:1337/reviews/", {
+      method: "post",
+      body: JSON.stringify(review),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    }).then(() => console.log("review added!!!"));
   }
 }

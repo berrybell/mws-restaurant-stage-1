@@ -1,0 +1,16 @@
+Main requirements:
+✔ // TODO: Users are able to mark a restaurant as a favorite, this toggle is visible in the application. @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#1 @done(18-08-03 20:34)
+✔ // TODO: A form is added to allow users to add their own reviews for a restaurant. @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#2 @done(18-08-03 22:20)
+✔ // TODO: Form submission works properly and adds a new review to the database. @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#3 @done(18-08-03 20:33)
+☐ // TODO: The client application works offline. JSON responses are cached using the IndexedDB API. Any data previously accessed while connected is reachable while offline. @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#5
+☐ // TODO: User is able to add a review to a restaurant while offline and the review is sent to the server when connectivity is re-established. @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#6
+☐ // TODO: All new features are responsive, including the form to add a review and the control for marking a restaurant as a favorite. @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#8
+☐ // TODO: Roles are correctly defined for all elements of the review form. @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#10
+✔ // TODO: Progressive Web App: >90 @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#12 @done(18-08-03 20:33)
+☐ // TODO: Performance: >90 @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#13
+✔ // TODO: Accessibility: >90 @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/main.js#14 @done(18-08-03 20:33)
+Bug fixes:
+☐ // TODO: Send reviews both to DOM and IDB @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/dbhelper.js#300
+Improvements:
+☐ // TODO: Fix date format once main requirements are done @file:///d%3A/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/mws-restaurant-stage-1/js/restaurant_info.js#183
+☐ // TODO: Clean up console.logs and debugging code

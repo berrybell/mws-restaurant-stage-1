@@ -46,6 +46,19 @@ class DBHelper {
     });
   }
 
+  static addReviewsToDB(restaurant, reviews) {
+    return DBHelper.createDB().then(db => {
+      if (!db) return;
+      let tx = db.transaction("restaurantDB", "readwrite");
+      let store = tx.objectStore("restaurantDB");
+      store.get(restaurant.id).then(restaurant => {
+        restaurant.reviews = reviews;
+        store.put(restaurant);
+      });
+      return tx.complete;
+    });
+  }
+
   /**
    * Fetch all restaurants. Stage 1.
    */
@@ -292,31 +305,36 @@ class DBHelper {
    * Get all reviews for restaurant
    */
   static getReviews(restaurant) {
-    fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`)
-      .then(response => {
-        return response.json();
-      })
-      .then(reviews => {
-        DBHelper.createDB().then(db => {
-          if (!db) return;
-          let tx = db.transaction("restaurantDB", "readwrite");
-          let store = tx.objectStore("restaurantDB");
-          store.get(restaurant.id).then(restaurant => {
-            restaurant.reviews = reviews;
-            store.put(restaurant);
+    return DBHelper.getCachedDB().then(restaurants => {
+      // Find the restaurant (key starts at 1 but index starts at 0)
+      const dbRestaurant = restaurants[restaurant.id - 1];
+      // If reviews have not been loaded (there can also be 0 reviews), restaurant will not have reviews property
+      if (!dbRestaurant.hasOwnProperty("reviews")) {
+        // Fetch reviews and add them to DB
+        fetch(
+          `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(reviews => {
+            // TODO: Serve reviews from DB
+            DBHelper.addReviewsToDB(restaurant, reviews);
             return reviews;
           });
-          return tx.complete;
-        });
-      });
+      } else {
+        // Return an object with reviews
+        return dbRestaurant.reviews;
+      }
+    });
   }
 
   /**
    * Add a restaurant review
    */
   static addReview(review) {
-    fetch("http://localhost:1337/reviews/", {
-      method: "post",
+    fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
+      method: "POST",
       body: JSON.stringify(review),
       headers: {
         Accept: "application/json",

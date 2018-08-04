@@ -305,28 +305,35 @@ class DBHelper {
    * Get all reviews for restaurant
    */
   static getReviews(restaurant) {
-    return DBHelper.getCachedDB().then(restaurants => {
-      // Find the restaurant (key starts at 1 but index starts at 0)
-      const dbRestaurant = restaurants[restaurant.id - 1];
-      // If reviews have not been loaded (there can also be 0 reviews), restaurant will not have reviews property
-      if (!dbRestaurant.hasOwnProperty("reviews")) {
-        // Fetch reviews and add them to DB
-        fetch(
-          `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`
-        )
-          .then(response => {
-            return response.json();
-          })
-          .then(reviews => {
-            // TODO: Serve reviews from DB
-            DBHelper.addReviewsToDB(restaurant, reviews);
-            return reviews;
-          });
-      } else {
-        // Return an object with reviews
-        return dbRestaurant.reviews;
-      }
-    });
+    return DBHelper.getCachedDB()
+      .then(restaurants => {
+        // Find the restaurant (key starts at 1 but index starts at 0)
+        const dbRestaurant = restaurants[restaurant.id - 1];
+        // If reviews have not been loaded (there can also be 0 reviews), restaurant will not have reviews property
+        if (!dbRestaurant.hasOwnProperty("reviews")) {
+          // Fetch reviews and add them to DB
+          fetch(
+            `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`
+          )
+            .then(response => {
+              return response.json();
+            })
+            .then(reviews => {
+              // TODO: Serve reviews from DB
+              DBHelper.addReviewsToDB(restaurant, reviews);
+              console.log("reviews after adding " + reviews);
+              return reviews;
+            });
+        } else {
+          // Return an object with reviews
+          console.log("db reviews " + dbRestaurant.reviews);
+          return dbRestaurant.reviews;
+        }
+      })
+      .then(reviews => {
+        console.log("callback reviews " + reviews);
+        return reviews;
+      });
   }
 
   /**

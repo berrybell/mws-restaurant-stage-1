@@ -47,7 +47,7 @@ class DBHelper {
   }
 
   static addReviewsToDB(restaurant, reviews) {
-    return DBHelper.createDB().then(db => {
+    DBHelper.createDB().then(db => {
       if (!db) return;
       let tx = db.transaction("restaurantDB", "readwrite");
       let store = tx.objectStore("restaurantDB");
@@ -320,15 +320,15 @@ class DBHelper {
             })
             .then(reviews => {
               // TODO: Serve reviews from DB
-              DBHelper.addReviewsToDB(restaurant, reviews);
+              DBHelper.addReviewsToDB(restaurant, reviews).then(reviews => {
+                return reviews;
+              });
               console.log("reviews after adding " + reviews);
-              return reviews;
             });
-        } else {
-          // Return an object with reviews
-          console.log("db reviews " + dbRestaurant.reviews);
-          return dbRestaurant.reviews;
         }
+        // Return an object with reviews
+        console.log("db reviews " + dbRestaurant.reviews);
+        return dbRestaurant.reviews;
       })
       .then(reviews => {
         console.log("callback reviews " + reviews);

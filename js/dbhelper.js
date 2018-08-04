@@ -312,26 +312,21 @@ class DBHelper {
         // If reviews have not been loaded (there can also be 0 reviews), restaurant will not have reviews property
         if (!dbRestaurant.hasOwnProperty("reviews")) {
           // Fetch reviews and add them to DB
-          fetch(
+          return fetch(
             `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`
           )
             .then(response => {
               return response.json();
             })
             .then(reviews => {
-              // TODO: Serve reviews from DB
-              DBHelper.addReviewsToDB(restaurant, reviews).then(reviews => {
-                return reviews;
-              });
-              console.log("reviews after adding " + reviews);
+              DBHelper.addReviewsToDB(restaurant, reviews);
+              return reviews;
             });
         }
         // Return an object with reviews
-        console.log("db reviews " + dbRestaurant.reviews);
         return dbRestaurant.reviews;
       })
       .then(reviews => {
-        console.log("callback reviews " + reviews);
         return reviews;
       });
   }

@@ -8,7 +8,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   /**
@@ -46,6 +46,19 @@ class DBHelper {
     });
   }
 
+  static addReviewsToDB(restaurant, reviews) {
+    DBHelper.createDB().then(db => {
+      if (!db) return;
+      let tx = db.transaction("restaurantDB", "readwrite");
+      let store = tx.objectStore("restaurantDB");
+      store.get(restaurant.id).then(restaurant => {
+        restaurant.reviews = reviews;
+        store.put(restaurant);
+      });
+      return tx.complete;
+    });
+  }
+
   /**
    * Fetch all restaurants. Stage 1.
    */
@@ -71,7 +84,7 @@ class DBHelper {
     return DBHelper.getCachedDB()
       .then(restaurants => {
         if (!restaurants.length) {
-          return fetch(DBHelper.DATABASE_URL)
+          return fetch(`${DBHelper.DATABASE_URL}/restaurants`)
             .then(response => {
               return response.json();
             })
@@ -241,5 +254,94 @@ class DBHelper {
     );
     marker.addTo(newMap);
     return marker;
+  }
+  /**
+   * Favorite/unfavorite a restaurant
+   */
+  static changeFavStatus(restaurant, setFavorite) {
+    if (setFavorite) {
+      fetch(
+        `${DBHelper.DATABASE_URL}/restaurants/${
+          restaurant.id
+        }/?is_favorite=true`,
+        {
+          method: "PUT"
+        }
+      ).then(
+        DBHelper.createDB().then(db => {
+          if (!db) return;
+          let tx = db.transaction("restaurantDB", "readwrite");
+          let store = tx.objectStore("restaurantDB");
+          store.get(restaurant.id).then(restaurant => {
+            restaurant.is_favorite = true;
+            store.put(restaurant);
+          });
+          return tx.complete;
+        })
+      );
+    } else {
+      fetch(
+        `${DBHelper.DATABASE_URL}/restaurants/${
+          restaurant.id
+        }/?is_favorite=false`,
+        {
+          method: "PUT"
+        }
+      ).then(
+        DBHelper.createDB().then(db => {
+          if (!db) return;
+          let tx = db.transaction("restaurantDB", "readwrite");
+          let store = tx.objectStore("restaurantDB");
+          store.get(restaurant.id).then(restaurant => {
+            restaurant.is_favorite = false;
+            store.put(restaurant);
+          });
+          return tx.complete;
+        })
+      );
+    }
+  }
+  /**
+   * Get all reviews for restaurant
+   */
+  static getReviews(restaurant) {
+    return DBHelper.getCachedDB()
+      .then(restaurants => {
+        // Find the restaurant (key starts at 1 but index starts at 0)
+        const dbRestaurant = restaurants[restaurant.id - 1];
+        // If reviews have not been loaded (there can also be 0 reviews), restaurant will not have reviews property
+        if (!dbRestaurant.hasOwnProperty("reviews")) {
+          // Fetch reviews and add them to DB
+          return fetch(
+            `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`
+          )
+            .then(response => {
+              return response.json();
+            })
+            .then(reviews => {
+              DBHelper.addReviewsToDB(restaurant, reviews);
+              return reviews;
+            });
+        }
+        // Return an object with reviews
+        return dbRestaurant.reviews;
+      })
+      .then(reviews => {
+        return reviews;
+      });
+  }
+
+  /**
+   * Add a restaurant review
+   */
+  static addReview(review) {
+    fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
+      method: "POST",
+      body: JSON.stringify(review),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    }).then(() => console.log("review added!!!"));
   }
 }

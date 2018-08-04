@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <!-- PWA manifest -->
@@ -54,6 +54,26 @@
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
+    <section id="review-add-container" tabindex="0">
+      <form id="review-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name">
+
+        <label for="rating">Rating:</label>
+        <select id="rating" role="listbox" aria-label="Choose rating">
+          <option value="5">5</option>
+          <option value="4">4</option>
+          <option value="3">3</option>
+          <option value="2">2</option>
+          <option value="1">1</option>
+        </select>
+
+        <label for="comments">Review:</label>
+        <textarea rows="3" cols="33" id="comments"></textarea>
+
+        <button id="form-submit" onclick="addReview()">Add review</button>
+      </form>
+    </section>
     <section id="reviews-container" tabindex="0">
       <ul id="reviews-list"></ul>
     </section>

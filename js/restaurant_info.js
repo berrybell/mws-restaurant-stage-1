@@ -122,7 +122,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  DBHelper.getReviews(restaurant).then(reviews => {
+    fillReviewsHTML(reviews);
+  });
 };
 
 /**
@@ -150,7 +152,8 @@ fillRestaurantHoursHTML = (
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = reviews => {
+  console.log("fillReviews reviews " + reviews);
   const container = document.getElementById("reviews-container");
   const title = document.createElement("h3");
   title.innerHTML = "Reviews";
@@ -178,9 +181,9 @@ createReviewHTML = review => {
   name.innerHTML = review.name;
   li.appendChild(name);
 
-  const date = document.createElement("p");
-  date.innerHTML = review.date;
-  li.appendChild(date);
+  // const date = document.createElement("p");
+  // date.innerHTML = review.date;
+  // li.appendChild(date);
 
   const rating = document.createElement("p");
   rating.innerHTML = `Rating: ${review.rating}`;
@@ -215,4 +218,23 @@ getParameterByName = (name, url) => {
   if (!results) return null;
   if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
+};
+
+/**
+ * Submit review
+ */
+addReview = () => {
+  event.preventDefault();
+  const urlString = window.location.href;
+  const url = new URL(urlString);
+  const id = url.searchParams.get("id");
+
+  const reviewData = {
+    restaurant_id: id,
+    name: document.getElementById("name").value,
+    rating: document.getElementById("rating").value,
+    comments: document.getElementById("comments").value
+  };
+  console.log(reviewData);
+  DBHelper.addReview(reviewData);
 };
